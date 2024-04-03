@@ -35,7 +35,7 @@ jobs:
         working-directory: mood-tracking-app
 
       - name: Build Docker image
-        run: docker build . -t your-username/your-app-name
+        run: docker build . -t drxxmn/sentimate-frontend
         working-directory: mood-tracking-app
 
       - name: Log in to DockerHub
@@ -45,5 +45,5 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push Docker image
-        run: docker push your-username/your-app-name
+        run: docker push drxxmn/sentimate-frontend
         working-directory: mood-tracking-app
