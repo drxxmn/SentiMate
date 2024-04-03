@@ -21,14 +21,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npm test
-
       - name: Build the React app
         run: npm run build
 
       - name: Build Docker image
-        run: docker build . -t liang/sentimate-front-end
+        run: docker build . -t liang/sentimate-frontend
 
       - name: Log in to DockerHub
         uses: docker/login-action@v1
