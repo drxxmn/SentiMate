@@ -45,5 +45,5 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push Docker image
-        run: docker push drxxmn/sentimate-frontend
+        run: docker push drxxmn/sentimate-frontend:latest
         working-directory: mood-tracking-app
