@@ -27,8 +27,6 @@ jobs:
           ssh-keyscan 192.168.144.5 >> ~/.ssh/known_hosts
 
       - name: Transfer Project Files
-        env:
-          SSHPASS: ${{ secrets.SSH_PASSWORD }}
         run: |
           ssh -o StrictHostKeyChecking=no student@192.168.144.5 "mkdir -p /home/student/sentimate"
           scp -o StrictHostKeyChecking=no -r ./mood-tracking-app/tests/* student@192.168.144.5:/home/student/sentimate
