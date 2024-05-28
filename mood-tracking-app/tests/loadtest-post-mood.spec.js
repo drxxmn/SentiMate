@@ -26,7 +26,7 @@ function getRandomMood() {
 }
 
 export default function () {
-    const url = 'http://moodtrackerapi.local/api/mood';
+    const url = 'http://192.168.144.135/api/mood';
     const payload = JSON.stringify({
         mood: getRandomMood(), // Random mood from predefined values
         userId: getRandomString(8) // Random userId string

@@ -10,7 +10,7 @@ export let options = {
 };
 
 export default function () {
-    let res = http.get('http://moodtrackerapi.local/api/mood');
+    let res = http.get('http://192.168.144.135/api/mood');
     check(res, {
         'status is 200': (r) => r.status === 200,
         'response time is less than 200ms': (r) => r.timings.duration < 200,
