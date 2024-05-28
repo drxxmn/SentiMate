@@ -1,0 +1,40 @@
+name: Run Staging Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install AnyConnect VPN & Login
+        run: |
+          sudo apt-get update
+          sudo /sbin/modprobe tun
+          sudo apt-get install -y openconnect
+          printf 'Netlab Fontys ICT\n${{ secrets.NETLAB_USERNAME }}\n${{ secrets.NETLAB_PASSWORD }}\n' | sudo openconnect vpnnetlab.fhict.nl -b
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan 192.168.144.5 >> ~/.ssh/known_hosts
+
+      - name: Transfer Project Files
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          ssh -o StrictHostKeyChecking=no student@192.168.144.5 "mkdir -p /home/student/sentimate"
+          scp -o StrictHostKeyChecking=no -r ./mood-tracking-app/tests/* student@192.168.144.5:/home/student/sentimate
+
+      - name: Run Test Script
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD_STUDENT }}
+        run: |
+          ssh -o StrictHostKeyChecking=no student@192.168.144.5 "echo $SSHPASS | sudo -S bash /home/student/tests.sh"
