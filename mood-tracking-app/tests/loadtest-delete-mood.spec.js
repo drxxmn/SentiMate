@@ -9,10 +9,12 @@ export let options = {
     ],
 };
 
-// Function to get a list of mood entries to delete
 function getMoodEntries() {
     const url = 'http://192.168.144.135/api/mood';
     const res = http.get(url);
+    check(res, {
+        'status is 200': (r) => r.status === 200,
+    });
     return JSON.parse(res.body);
 }
 
@@ -25,6 +27,8 @@ export default function () {
         check(res, {
             'status is 204': (r) => r.status === 204,
         });
+    } else {
+        console.log("No more entries to delete.");
     }
     sleep(1);
 }
