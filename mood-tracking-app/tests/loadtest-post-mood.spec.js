@@ -1,5 +1,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
+import { SharedArray } from 'k6/data';
+import { text } from 'k6/encoding';
 
 export let options = {
     stages: [
@@ -43,5 +45,14 @@ export default function () {
         'status is 201': (r) => r.status === 201,
         'response time is less than 200ms': (r) => r.timings.duration < 200,
     });
+
+    if (res.status === 201) {
+        // Save the ID of the created mood entry
+        const responseBody = JSON.parse(res.body);
+        const createdId = responseBody.id;
+        console.log(createdId); // Log the ID, or save it to a file
+        // You can use k6's built-in shared array or file system to save IDs
+    }
+
     sleep(1);
 }
