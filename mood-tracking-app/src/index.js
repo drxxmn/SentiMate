@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         clientId={config.clientId}
         authorizationParams={{
             redirect_uri: window.location.origin,
-            audience: "https://sentimate.eu.auth0.com/userinfo",
+            audience: "https://sentimate.eu.auth0.com/api/v2/",
             scope: "openid profile email read:current_user update:current_user_metadata"
         }}>
         <ThemeProvider theme={theme}>
