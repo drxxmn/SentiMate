@@ -2,9 +2,8 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { SharedArray } from 'k6/data';
 
-// Assuming IDs are saved in a JSON file, each ID on a new line
 const createdIds = new SharedArray('createdIds', function () {
-    return JSON.parse(open('./createdIds.json'));
+    return JSON.parse(open('./createdIds.json')); // Read the JSON file from the current directory
 });
 
 export let options = {

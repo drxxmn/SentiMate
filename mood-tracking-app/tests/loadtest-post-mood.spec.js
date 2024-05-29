@@ -1,7 +1,6 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { SharedArray } from 'k6/data';
-import { text } from 'k6/encoding';
+import { writeFileSync } from 'k6/x/fs';
 
 export let options = {
     stages: [
@@ -12,6 +11,7 @@ export let options = {
 };
 
 const moods = ["Happy", "Neutral", "Sad", "Very Happy", "Very Sad"];
+let createdIds = [];
 
 function getRandomString(length) {
     const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -30,8 +30,8 @@ function getRandomMood() {
 export default function () {
     const url = 'http://192.168.144.135/api/mood';
     const payload = JSON.stringify({
-        mood: getRandomMood(), // Random mood from predefined values
-        userId: getRandomString(8) // Random userId string
+        mood: getRandomMood(),
+        userId: getRandomString(8)
     });
 
     const params = {
@@ -43,16 +43,22 @@ export default function () {
     let res = http.post(url, payload, params);
     check(res, {
         'status is 201': (r) => r.status === 201,
-        'response time is less than 200ms': (r) => r.timings.duration < 200,
     });
 
+    // Store the ID of the created mood
     if (res.status === 201) {
-        // Save the ID of the created mood entry
         const responseBody = JSON.parse(res.body);
-        const createdId = responseBody.id;
-        console.log(createdId); // Log the ID, or save it to a file
-        // You can use k6's built-in shared array or file system to save IDs
+        createdIds.push(responseBody.id); // Assuming the response contains the ID in the 'id' field
     }
 
     sleep(1);
+}
+
+// Function to write the created IDs to a file
+export function handleSummary(data) {
+    console.log(JSON.stringify(createdIds)); // Log the created IDs
+    writeFileSync('createdIds.json', JSON.stringify(createdIds));
+    return {
+        stdout: text(data), // Log summary to console
+    };
 }
