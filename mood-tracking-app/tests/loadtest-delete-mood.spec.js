@@ -9,26 +9,19 @@ export let options = {
     ],
 };
 
-function getMoodEntries() {
-    const url = 'http://192.168.144.135/api/mood';
-    const res = http.get(url);
-    check(res, {
-        'status is 200': (r) => r.status === 200,
-    });
-    return JSON.parse(res.body);
+// Fetch all mood entries
+export function setup() {
+    let res = http.get('http://192.168.144.135/api/mood');
+    return res.json(); // Return all entries as setup data
 }
 
-export default function () {
-    const moodEntries = getMoodEntries();
-    if (moodEntries.length > 0) {
-        const entry = moodEntries[Math.floor(Math.random() * moodEntries.length)];
-        const url = `http://192.168.144.135/api/mood/${entry.id}`;
-        const res = http.del(url);
+export default function (data) {
+    // Iterate over all entries and delete each one
+    data.forEach(entry => {
+        let res = http.del(`http://192.168.144.135/api/mood/${entry.id}`);
         check(res, {
-            'status is 204': (r) => r.status === 204,
+            'status is 200': (r) => r.status === 200,
         });
-    } else {
-        console.log("No more entries to delete.");
-    }
-    sleep(1);
+        sleep(1);
+    });
 }
