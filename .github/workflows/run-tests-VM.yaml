@@ -17,7 +17,7 @@ jobs:
           sudo apt-get update
           sudo /sbin/modprobe tun
           sudo apt-get install -y openconnect
-          echo "${{ secrets.NETLAB_PASSWORD }}" | sudo openconnect --user=${{ secrets.NETLAB_USERNAME }} --passwd-on-stdin vpnnetlab.fhict.nl -b
+          printf 'Netlab Fontys ICT\n${{ secrets.NETLAB_USERNAME }}\n${{ secrets.NETLAB_PASSWORD }}\n' | sudo openconnect vpnnetlab.fhict.nl -b
 
       - name: Setup SSH Key
         run: |
