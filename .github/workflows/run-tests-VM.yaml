@@ -37,5 +37,5 @@ jobs:
           GRAFANA_CLOUD_TOKEN: ${{ secrets.GRAFANA_CLOUD_TOKEN }}
         run: |
           ssh -tt -o StrictHostKeyChecking=no student@192.168.144.5 << EOF
-            echo "${{ secrets.SSH_PASSWORD_STUDENT }}" | sudo -S /bin/bash /home/student/tests.sh
+            echo "${{ secrets.SSH_PASSWORD_STUDENT }}" | sudo -S GRAFANA_CLOUD_TOKEN=${{ secrets.GRAFANA_CLOUD_TOKEN }} /bin/bash /home/student/tests.sh
           EOF
