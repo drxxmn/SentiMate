@@ -17,7 +17,7 @@ jobs:
           sudo apt-get update
           sudo /sbin/modprobe tun
           sudo apt-get install -y openconnect
-          printf 'Netlab Fontys ICT\n${{ secrets.NETLAB_USERNAME }}\n${{ secrets.NETLAB_PASSWORD }}\n' | sudo openconnect vpnnetlab.fhict.nl -b
+          echo "${{ secrets.NETLAB_PASSWORD }}" | sudo openconnect --user=${{ secrets.NETLAB_USERNAME }} --passwd-on-stdin vpnnetlab.fhict.nl -b
 
       - name: Setup SSH Key
         run: |
@@ -31,8 +31,24 @@ jobs:
           ssh -o StrictHostKeyChecking=no student@192.168.144.5 "mkdir -p /home/student/sentimate"
           scp -o StrictHostKeyChecking=no -r ./mood-tracking-app/tests/* student@192.168.144.5:/home/student/sentimate
 
-      - name: Run Test Script
-        env:
-          SSHPASS: ${{ secrets.SSH_PASSWORD_STUDENT }}
+      - name: Install K6
         run: |
-          ssh -o StrictHostKeyChecking=no student@192.168.144.5 "echo $SSHPASS | sudo -S bash /home/student/tests.sh"
+          ssh -o StrictHostKeyChecking=no student@192.168.144.5 << EOF
+            sudo apt-get update
+            sudo apt-get install -y gnupg2
+            curl -s https://dl.k6.io/key.gpg | sudo apt-key add -
+            echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+            sudo apt-get update
+            sudo apt-get install -y k6
+          EOF
+
+      - name: Authenticate K6 with Grafana Cloud
+        run: |
+          ssh -o StrictHostKeyChecking=no student@192.168.144.5 "k6 login cloud --token ${{ secrets.GRAFANA_CLOUD_TOKEN }}"
+
+      - name: Run K6 Test in the Cloud
+        run: |
+          ssh -o StrictHostKeyChecking=no student@192.168.144.5 << EOF
+            cd /home/student/sentimate
+            k6 cloud script.js
+          EOF
