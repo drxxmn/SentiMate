@@ -31,24 +31,10 @@ jobs:
           ssh -o StrictHostKeyChecking=no student@192.168.144.5 "mkdir -p /home/student/sentimate"
           scp -o StrictHostKeyChecking=no -r ./mood-tracking-app/tests/* student@192.168.144.5:/home/student/sentimate
 
-      - name: Install K6
+      - name: Run Test Script
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD_STUDENT }}
         run: |
           ssh -tt -o StrictHostKeyChecking=no student@192.168.144.5 << EOF
-            echo "${{ secrets.SSH_PASSWORD_STUDENT }}" | sudo -S apt-get update
-            echo "${{ secrets.SSH_PASSWORD_STUDENT }}" | sudo -S apt-get install -y gnupg2
-            curl -s https://dl.k6.io/key.gpg | sudo apt-key add -
-            echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-            echo "${{ secrets.SSH_PASSWORD_STUDENT }}" | sudo -S apt-get update
-            echo "${{ secrets.SSH_PASSWORD_STUDENT }}" | sudo -S apt-get install -y k6
-          EOF
-
-      - name: Authenticate K6 with Grafana Cloud
-        run: |
-          ssh -o StrictHostKeyChecking=no student@192.168.144.5 "k6 login cloud --token ${{ secrets.GRAFANA_CLOUD_TOKEN }}"
-
-      - name: Run K6 Test in the Cloud
-        run: |
-          ssh -tt -o StrictHostKeyChecking=no student@192.168.144.5 << EOF
-            cd /home/student/sentimate
-            k6 cloud script.js
+            echo "${{ secrets.SSH_PASSWORD_STUDENT }}" | sudo -S /bin/bash /home/student/tests.sh
           EOF
