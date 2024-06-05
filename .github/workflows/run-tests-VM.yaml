@@ -34,6 +34,7 @@ jobs:
       - name: Run Test Script
         env:
           SSHPASS: ${{ secrets.SSH_PASSWORD_STUDENT }}
+          GRAFANA_CLOUD_TOKEN: ${{ secrets.GRAFANA_CLOUD_TOKEN }}
         run: |
           ssh -tt -o StrictHostKeyChecking=no student@192.168.144.5 << EOF
             echo "${{ secrets.SSH_PASSWORD_STUDENT }}" | sudo -S /bin/bash /home/student/tests.sh
