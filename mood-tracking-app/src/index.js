@@ -1,4 +1,3 @@
-// index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
@@ -22,7 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         authorizationParams={{
             redirect_uri: window.location.origin,
             audience: "https://sentimate.eu.auth0.com/api/v2/",
-            scope: "openid profile email read:current_user update:current_user_metadata"
+            scope: "openid profile email read:current_user update:current_user_metadata offline_access"
         }}>
         <ThemeProvider theme={theme}>
             <CssBaseline />
