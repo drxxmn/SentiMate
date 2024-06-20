@@ -1,3 +1,4 @@
 {
-  "backendEndpoint": "http://192.168.144.135/api/mood"
+  "backendEndpoint": "http://192.168.144.135/api/mood",
+  "supportiveMessageEndpoint": "http://192.168.144.135/SupportiveMessage"
 }
