@@ -10,7 +10,7 @@ import axios from 'axios';
 import config from './config.json'; // Config file with backend endpoint
 
 function App() {
-    const { isAuthenticated, user, getAccessTokenSilently, error, logout } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently, logout } = useAuth0();
     const [selectedMood, setSelectedMood] = useState(null);
 
     const handleMoodSelect = (index) => {
@@ -21,11 +21,17 @@ function App() {
         if (selectedMood !== null) {
             try {
                 const token = await getAccessTokenSilently();
+                const timezoneOffset = new Date().getTimezoneOffset();
                 console.log('Token:', token);  // Debugging log
                 const response = await axios.post(
-                    config.backendEndpoint,
+                    config.backendEndpoint, // Using the backend endpoint from config
                     { mood: selectedMood },
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Timezone-Offset': timezoneOffset.toString()
+                        }
+                    }
                 );
                 console.log('Response:', response.data);
             } catch (error) {
@@ -58,7 +64,7 @@ function App() {
                     <Typography variant="h6">Please log in to continue.</Typography>
                 )}
             </Container>
-            <pre>{JSON.stringify({ isAuthenticated, user, error, selectedMood }, null, 2)}</pre>
+            <pre>{JSON.stringify({ isAuthenticated, selectedMood }, null, 2)}</pre>
         </div>
     );
 }
