@@ -1,4 +1,4 @@
 {
-  "backendEndpoint": "http://192.168.144.135/api/mood",
-  "supportiveMessageEndpoint": "http://192.168.144.135/SupportiveMessage"
+  "backendEndpoint": "https://sentimate-frontend.pages.dev/api/mood",
+  "supportiveMessageEndpoint": "https://sentimate-frontend.pages.dev/SupportiveMessage"
 }
