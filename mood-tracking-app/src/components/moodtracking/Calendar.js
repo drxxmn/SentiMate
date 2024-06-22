@@ -28,6 +28,10 @@ const moodColors = [
 ];
 
 const Calendar = ({ moodData }) => {
+    if (!Array.isArray(moodData)) {
+        return <Typography variant="h6" align="center">Error loading calendar data.</Typography>;
+    }
+
     const events = moodData.map(entry => ({
         title: moodIcons[entry.mood],
         start: new Date(entry.timestamp),

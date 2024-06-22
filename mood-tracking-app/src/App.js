@@ -26,9 +26,10 @@ function App() {
                     const response = await axios.get(config.backendEndpoint, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
-                    setMoodData(response.data);
+                    setMoodData(Array.isArray(response.data) ? response.data : []);
                 } catch (error) {
                     console.error('Error fetching mood data:', error);
+                    setMoodData([]);
                 }
             };
             fetchMoodData();
@@ -59,7 +60,7 @@ function App() {
                 const response = await axios.get(config.backendEndpoint, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                setMoodData(response.data);
+                setMoodData(Array.isArray(response.data) ? response.data : []);
             } catch (error) {
                 console.error('Error submitting mood:', error);
                 if (error.response && (error.response.status === 401 || error.response.status === 403)) {
